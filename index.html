@@ -1,0 +1,326 @@
+<html>
+
+<head>
+  <title>Black Jack</title>
+
+  <style>
+    body {
+        background-color: green;
+      }
+
+      img {
+        width: 150px;
+        position: fixed;
+        display: none;
+      }
+      button {
+        background-color: red ; /* Green */
+        border: none;
+        color: white;
+        width:100px;
+        padding:10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 20px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        position:fixed;
+        outline: none;
+      }
+      .total{
+        font-size: 30px;
+        font-family: Arial, Helvetica, sans-serif;
+        color:white;
+        margin-left: 100px
+      }
+      .bet{
+        width: 200px;
+        font-size:30px;
+        margin-top:15%;
+        position:fixed;
+
+      }
+    </style>
+</head>
+
+<body>
+  <div style="margin-top:100px; margin-left:450px; position: relative;;">
+    <img id="d1" src="Playing Cards/10C.jpg" />
+    <img id="d2" src="Playing Cards/10C.jpg" style="margin-left:80px; " />
+    <img id="d3" src="Playing Cards/10C.jpg" style="margin-left:160px; " />
+    <img id="d4" src="Playing Cards/10C.jpg" style="margin-left:240px; " />
+    <img id="d5" src="Playing Cards/10C.jpg" style="margin-left:320px; " />
+  </div>
+  <div style="margin-top:400px; margin-left:450px;position: absolute;;">
+    <img id="u1" src="Playing Cards/10C.jpg" />
+    <img id="u2" src="Playing Cards/10C.jpg" style="margin-left:80px; " />
+    <img id="u3" src="Playing Cards/10C.jpg" style="margin-left:160px; " />
+    <img id="u4" src="Playing Cards/10C.jpg" style="margin-left:240px; " />
+    <img id="u5" src="Playing Cards/10C.jpg" style="margin-left:320px; " />
+  </div>
+  
+ 
+  <p id="dealerTotal" class="total">Dealer Card Total: 0</p>
+  <form class="total">
+    <input type="number"   style="margin-top:150px" class="bet" id="bet" required />
+    <button type="button" style="
+    position:fixed; height:100px;width:150px; margin-left:25px;margin-top:200;border:solid black;border-width: 3px;" value="Bet" onclick="betSub()">BET</button>
+  </form>
+  <div style="width:100%;margin-left:40%; margin-top:250px; align-content: center">
+    <button type="button" id="hit" onclick="hit()" style="display: none">hit</button>
+    <button type="button" id="stand" onclick="stand()" style="display: none;background-color: black; margin-left:150px">stand</button>
+  </div>
+  <p id="balance" class="total" style ="margin-top:400px" >£500</p>
+  <p id="userTotal" class="total">Your Total: 0</p>
+  
+  
+
+  <script>
+    cards = {
+      A: 11,
+      "2": 2,
+      "3": 3,
+      "4": 4,
+      "5": 5,
+      "6": 6,
+      "7": 7,
+      "8": 8,
+      "9": 9,
+      "10": 10,
+      J: 10,
+      Q: 10,
+      K: 10
+    };
+    suits = ["C", "D", "H", "S"];
+
+    userCards = [];
+    dealerCards = [];
+    balance = 500;
+    var hitCount = 0;
+    var playerCardTotal,
+      dealerCardTotal = 0;
+
+    function betSub() {
+      bet = document.getElementById("bet").value;
+      console.log(bet);
+      if (bet > balance) {
+        alert("but ur mum gey dow");
+      } else {
+        play();
+      }
+    }
+    var userCounter = 0;
+
+    function randomCard() {
+      var card = Math.floor(Math.random() * Object.keys(cards).length);
+      var card2 = Object.keys(cards)[card];
+      var suit = suits[Math.floor(Math.random() * suits.length)];
+      var returnC = card2 + suit;
+      //console.log(cards[card2])
+      if (userCounter == 1) {
+        playerCardTotal += cards[card2];
+        userCards.push(returnC);
+      } else {
+        dealerCardTotal += cards[card2];
+        dealerCards.push(returnC);
+      }
+
+      //console.log(returnC)
+      userCounter = 0;
+      return returnC;
+    }
+
+    function play() {
+      clear()
+      dealerCardTotal = 0;
+      document.getElementById("hit").style.display = "block";
+      document.getElementById("stand").style.display = "block";
+      document.getElementById("dealerTotal").innerHTML =
+        "Dealer Total: " + dealerCardTotal;
+      playerCardTotal = 0;
+      dealerCardTotal = 0;
+      userCounter = 0;
+
+      balance = balance - bet;
+      document.getElementById("balance").innerHTML = "£" + balance;
+      //console.log(randomCard() + ".jpg")
+
+      userCounter = 1;
+      document.getElementById("u1").src =
+        "Playing Cards/" + randomCard() + ".jpg";
+      document.getElementById("u1").style.display = "block";
+
+      document.getElementById("d1").src = "Playing Cards/Gray_back.jpg";
+      document.getElementById("d1").style.display = "block";
+
+      userCounter = 1;
+      document.getElementById("u2").src =
+        "Playing Cards/" + randomCard() + ".jpg";
+      document.getElementById("u2").style.display = "block";
+
+      document.getElementById("d2").src =
+        "Playing Cards/" + randomCard() + ".jpg";
+      document.getElementById("d2").style.display = "block";
+
+      console.log("p ", playerCardTotal, userCards);
+      console.log("d ", dealerCardTotal, dealerCards);
+      hitCount += 2;
+      document.getElementById("userTotal").innerHTML =
+        "Your Total: " + playerCardTotal;
+
+      if (playerCardTotal==21){
+          win()
+      }
+    }
+    
+
+    function hit() {
+      hitCount += 1;
+      userCounter = 1;
+      console.log(playerCardTotal);
+      document.getElementById("u" + hitCount).src =
+        "Playing Cards/" + randomCard() + ".jpg";
+      document.getElementById("u" + hitCount).style.display = "block";
+      console.log(playerCardTotal);
+
+      document.getElementById("userTotal").innerHTML =
+        "Your Total: " + playerCardTotal;
+      overCheck();
+    }
+
+    function overCheck() {
+      console.log("yo man" + playerCardTotal);
+      if (playerCardTotal > 21) {
+        let a = 0
+        let aCount = 0
+        for (let card of userCards) {
+          if (card.includes("A")){
+            if (aCount == 0)
+            console.log("aaaa")
+            playerCardTotal -= 10
+            console.log(userCards)
+            userCards.splice(userCards.indexOf(card),1)
+            console.log(userCards)
+            document.getElementById("userTotal").innerHTML =
+        "Your Total: " + playerCardTotal;
+            aCount =1
+            a = 1};
+        }
+        if (a == 0){
+        lose();}
+        
+        //clear()}
+        // console.log(1)
+        // alert("unlucky your bust");
+        // clear()
+        //setTimeout(clear(),200)
+      }
+    }
+
+    function stand() {
+      dCount = 3;
+
+      document.getElementById("d1").src =
+        "Playing Cards/" + randomCard() + ".jpg";
+      document.getElementById("d1").style.display = "block";
+      document.getElementById("dealerTotal").innerHTML =
+        "Dealer Total: " + dealerCardTotal;
+
+      while (dealerCardTotal < 18) {
+        document.getElementById("d" + dCount).src =
+          "Playing Cards/" + randomCard() + ".jpg";
+        document.getElementById("d" + dCount).style.display = "block";
+        console.log("dealerTotal", dealerCardTotal);
+        document.getElementById("dealerTotal").innerHTML =
+          "Dealer Total: " + dealerCardTotal;
+        
+        
+      }
+      if (dealerCardTotal > 21) {
+          dealerCardTotal = 0;
+        }
+        console.log(dealerCards)
+      finalCheck();
+    }
+
+    function finalCheck() {
+      console.log("final p: ", playerCardTotal);
+      console.log("final d: ", dealerCardTotal);
+      if (dealerCardTotal == 0) {
+        win();
+      } else if (playerCardTotal > dealerCardTotal) {
+        win();
+      } else if (playerCardTotal == dealerCardTotal) {
+        draw();
+      } else {
+        lose();
+      }
+    }
+
+    function win() {
+      setTimeout(function () {
+        alert("You win " + bet);
+        console.log(balance);
+        console.log(parseInt(bet));
+        balance += 2 * parseInt(bet);
+        document.getElementById("balance").innerHTML = "£" + balance;
+      }, 100);
+      setTimeout(function () {
+        clear();
+      }, 200);
+    }
+
+    function lose() {
+      setTimeout(function () {
+        alert("You lose " + bet);
+      }, 100);
+      setTimeout(function () {
+        clear();
+      }, 200);
+    }
+
+    function draw() {
+      setTimeout(function () {
+        alert("Draw");
+      }, 100);
+      setTimeout(function () {
+        clear();
+      }, 200);
+      balance +=  parseInt(bet);
+        document.getElementById("balance").innerHTML = "£" + balance;
+    }
+
+    function clear() {
+      console.log("clear");
+      userCards = [];
+      dealerCards = [];
+      hitCount = 0;
+      playerCardTotal = 0;
+      dealerCardTotal = 0;
+      document.getElementById("userTotal").innerHTML =
+        "Your Total: " + playerCardTotal;
+      document.getElementById("dealerTotal").innerHTML =
+        "Dealer Total: " + dealerCardTotal;
+      document.getElementById("u1").style.display = "none";
+      document.getElementById("u2").style.display = "none";
+      document.getElementById("u3").style.display = "none";
+      document.getElementById("u4").style.display = "none";
+      document.getElementById("u5").style.display = "none";
+
+      document.getElementById("d1").style.display = "none";
+      document.getElementById("d2").style.display = "none";
+      document.getElementById("d3").style.display = "none";
+      document.getElementById("d4").style.display = "none";
+      document.getElementById("d5").style.display = "none";
+
+      document.getElementById("hit").style.display = "none";
+      document.getElementById("stand").style.display = "none";
+    }
+
+    randomCard();
+  </script>
+</body>
+
+</html>
